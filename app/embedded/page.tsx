@@ -56,6 +56,7 @@ export default function EmbeddedDashboard() {
           text: inputText,
           conversionType,
           userId,
+          skipCreditCheck: true, // Credits already deducted via parent
         }),
       })
 
