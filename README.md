@@ -242,3 +242,5 @@ For issues or questions:
 ---
 
 **Built with ❤️ as part of the CR AudioViz AI ecosystem**
+
+<!-- Build trigger: Database schema fixes applied -->
