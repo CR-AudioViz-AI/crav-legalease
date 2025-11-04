@@ -2,14 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    serverActions: {
-      enabled: true,
-    },
-  },
   images: {
     domains: ['kteobfyferrukqeolofj.supabase.co'],
   },
+  // Remove experimental serverActions as it's stable in Next.js 14
 }
 
 module.exports = nextConfig
