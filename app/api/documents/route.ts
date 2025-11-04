@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, title, originalContent, documentType, conversionType } = await request.json()
+    const { userId, title, originalContent, conversionType } = await request.json()
 
     if (!userId || !title || !originalContent) {
       return NextResponse.json(
@@ -53,7 +53,6 @@ export async function POST(request: NextRequest) {
         title,
         original_content: originalContent,
         conversion_type: conversionType || 'legal-to-plain',
-        document_type: documentType || 'other',
         status: 'pending',
         credits_used: 0,
       })
