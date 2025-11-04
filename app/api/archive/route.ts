@@ -1,0 +1,85 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+// GET /api/archive - List archived documents
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const organization_id = searchParams.get('organization_id')
+    const archived_by = searchParams.get('archived_by')
+    const limit = parseInt(searchParams.get('limit') || '50')
+
+    let query = supabase
+      .from('legalease_documents')
+      .select('*')
+      .eq('is_archived', true)
+      .order('archived_at', { ascending: false })
+      .limit(limit)
+
+    if (organization_id) {
+      query = query.eq('organization_id', organization_id)
+    }
+
+    if (archived_by) {
+      query = query.eq('archived_by', archived_by)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+
+    return NextResponse.json({ documents: data })
+
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: 'Failed to fetch archived documents', details: error.message },
+      { status: 500 }
+    )
+  }
+}
+
+// POST /api/archive - Archive a document
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { document_id, archived_by, archive_reason } = body
+
+    if (!document_id) {
+      return NextResponse.json(
+        { error: 'Document ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const { data, error } = await supabase
+      .from('legalease_documents')
+      .update({
+        is_archived: true,
+        archived_at: new Date().toISOString(),
+        archived_by,
+        archive_reason,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', document_id)
+      .select()
+      .single()
+
+    if (error) throw error
+
+    return NextResponse.json({
+      success: true,
+      document: data
+    })
+
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: 'Failed to archive document', details: error.message },
+      { status: 500 }
+    )
+  }
+}
