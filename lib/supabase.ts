@@ -17,7 +17,7 @@ export const supabaseAdmin = createClient(
   }
 )
 
-// Database types matching crav-website schema
+// Database types matching crav-website shared schema
 export type Database = {
   public: {
     Tables: {
@@ -27,7 +27,18 @@ export type Database = {
           email: string
           full_name: string | null
           credits_balance: number
-          subscription_tier: 'free' | 'starter' | 'professional' | 'enterprise'
+          total_credits_purchased: number
+          subscription_tier: string | null
+          subscription_status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          paypal_customer_id: string | null
+          paypal_subscription_id: string | null
+          avatar_url: string | null
+          bio: string | null
+          website: string | null
+          company: string | null
+          location: string | null
           created_at: string
           updated_at: string
         }
@@ -36,7 +47,18 @@ export type Database = {
           email: string
           full_name?: string | null
           credits_balance?: number
-          subscription_tier?: 'free' | 'starter' | 'professional' | 'enterprise'
+          total_credits_purchased?: number
+          subscription_tier?: string | null
+          subscription_status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          paypal_customer_id?: string | null
+          paypal_subscription_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          website?: string | null
+          company?: string | null
+          location?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -45,9 +67,52 @@ export type Database = {
           email?: string
           full_name?: string | null
           credits_balance?: number
-          subscription_tier?: 'free' | 'starter' | 'professional' | 'enterprise'
+          total_credits_purchased?: number
+          subscription_tier?: string | null
+          subscription_status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          paypal_customer_id?: string | null
+          paypal_subscription_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          website?: string | null
+          company?: string | null
+          location?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      credit_transactions: {
+        Row: {
+          id: string
+          user_id: string
+          amount: number
+          type: 'credit' | 'debit'
+          description: string
+          reference_id: string | null
+          status: 'pending' | 'completed' | 'failed'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          amount: number
+          type: 'credit' | 'debit'
+          description: string
+          reference_id?: string | null
+          status?: 'pending' | 'completed' | 'failed'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          amount?: number
+          type?: 'credit' | 'debit'
+          description?: string
+          reference_id?: string | null
+          status?: 'pending' | 'completed' | 'failed'
+          created_at?: string
         }
       }
       legalease_documents: {
@@ -58,12 +123,10 @@ export type Database = {
           original_content: string
           converted_content: string | null
           conversion_type: 'legal-to-plain' | 'plain-to-legal'
-          document_type: 'contract' | 'agreement' | 'terms' | 'policy' | 'other'
-          status: 'pending' | 'processing' | 'completed' | 'failed'
-          credits_used: number
-          key_terms: any | null
+          key_terms: Record<string, any> | null
           summary: string | null
-          file_url: string | null
+          credits_used: number
+          status: 'pending' | 'processing' | 'completed' | 'failed'
           created_at: string
           updated_at: string
         }
@@ -74,12 +137,10 @@ export type Database = {
           original_content: string
           converted_content?: string | null
           conversion_type: 'legal-to-plain' | 'plain-to-legal'
-          document_type?: 'contract' | 'agreement' | 'terms' | 'policy' | 'other'
-          status?: 'pending' | 'processing' | 'completed' | 'failed'
-          credits_used: number
-          key_terms?: any | null
+          key_terms?: Record<string, any> | null
           summary?: string | null
-          file_url?: string | null
+          credits_used: number
+          status?: 'pending' | 'processing' | 'completed' | 'failed'
           created_at?: string
           updated_at?: string
         }
@@ -90,46 +151,12 @@ export type Database = {
           original_content?: string
           converted_content?: string | null
           conversion_type?: 'legal-to-plain' | 'plain-to-legal'
-          document_type?: 'contract' | 'agreement' | 'terms' | 'policy' | 'other'
-          status?: 'pending' | 'processing' | 'completed' | 'failed'
-          credits_used?: number
-          key_terms?: any | null
+          key_terms?: Record<string, any> | null
           summary?: string | null
-          file_url?: string | null
+          credits_used?: number
+          status?: 'pending' | 'processing' | 'completed' | 'failed'
           created_at?: string
           updated_at?: string
-        }
-      }
-      credit_transactions: {
-        Row: {
-          id: string
-          user_id: string
-          amount: number
-          type: 'purchase' | 'usage' | 'refund' | 'bonus'
-          description: string
-          app_name: string | null
-          metadata: Record<string, any> | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          amount: number
-          type: 'purchase' | 'usage' | 'refund' | 'bonus'
-          description: string
-          app_name?: string | null
-          metadata?: Record<string, any> | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          amount?: number
-          type?: 'purchase' | 'usage' | 'refund' | 'bonus'
-          description?: string
-          app_name?: string | null
-          metadata?: Record<string, any> | null
-          created_at?: string
         }
       }
       templates: {
@@ -160,35 +187,6 @@ export type Database = {
           category?: string
           content?: string
           is_active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      branding: {
-        Row: {
-          id: string
-          user_id: string
-          logo_url: string | null
-          primary_color: string
-          secondary_color: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          logo_url?: string | null
-          primary_color?: string
-          secondary_color?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          logo_url?: string | null
-          primary_color?: string
-          secondary_color?: string
           created_at?: string
           updated_at?: string
         }
