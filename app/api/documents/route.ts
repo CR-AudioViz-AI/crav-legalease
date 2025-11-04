@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { data: documents, error } = await supabaseAdmin
-      .from('documents')
+      .from('legalease_documents')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, title, originalContent, documentType } = await request.json()
+    const { userId, title, originalContent, documentType, conversionType } = await request.json()
 
     if (!userId || !title || !originalContent) {
       return NextResponse.json(
@@ -47,13 +47,15 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: document, error } = await supabaseAdmin
-      .from('documents')
+      .from('legalease_documents')
       .insert({
         user_id: userId,
         title,
         original_content: originalContent,
+        conversion_type: conversionType || 'legal-to-plain',
         document_type: documentType || 'other',
         status: 'pending',
+        credits_used: 0,
       })
       .select()
       .single()
