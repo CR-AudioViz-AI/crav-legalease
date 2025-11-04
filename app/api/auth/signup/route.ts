@@ -32,13 +32,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create user record in database
-    const { error: dbError } = await supabase.from('users').insert({
+    // Create user profile in database using profiles table
+    const { error: dbError } = await supabase.from('profiles').insert({
       id: authData.user.id,
       email: authData.user.email!,
-      name: name || null,
-      credits: 100, // Free tier starts with 100 credits
-      plan: 'free',
+      full_name: name || null,
+      credits_balance: 100, // Free tier starts with 100 credits
+      subscription_tier: 'free',
     })
 
     if (dbError) {
