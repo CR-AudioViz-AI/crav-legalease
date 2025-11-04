@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const event = constructWebhookEvent(body, signature);
+    const event = await constructWebhookEvent(body, signature);
 
     switch (event.type) {
       case 'checkout.session.completed': {
