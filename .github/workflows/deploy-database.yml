@@ -1,0 +1,37 @@
+name: Deploy Database Schema
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type DEPLOY to confirm'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Deploy schema
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          echo "Deploying database schema..."
+          psql -h db.kteobfyferrukqeolofj.supabase.co                -U postgres                -d postgres                -p 5432                -f database/enterprise-schema.sql                --set ON_ERROR_STOP=1
+          echo "Schema deployed successfully!"
+      
+      - name: Verify deployment
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          echo "Verifying tables..."
+          psql -h db.kteobfyferrukqeolofj.supabase.co                -U postgres                -d postgres                -p 5432                -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name;"
