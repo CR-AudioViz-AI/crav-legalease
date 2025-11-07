@@ -1,5 +1,6 @@
 // Credit system utilities
 import { createClient } from '@supabase/supabase-js'
+import { getErrorMessage, logError, formatApiError } from '@/lib/utils/error-utils';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -85,7 +86,7 @@ export async function deductCredits(
     return { success: true, newBalance }
 
   } catch (error: any) {
-    console.error('Credit deduction error:', error)
+    logError(\'Credit deduction error:\', error)
     return { success: false, newBalance: 0, error: error.message }
   }
 }
@@ -122,7 +123,7 @@ export async function addCredits(
     })
 
     return { success: true, newBalance }
-  } catch (error) {
+  } catch (error: unknown) {
     return { success: false, newBalance: 0 }
   }
 }
