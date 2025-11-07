@@ -1,12 +1,13 @@
 import pdf from 'pdf-parse'
 import mammoth from 'mammoth'
+import { getErrorMessage, logError, formatApiError } from '@/lib/utils/error-utils';
 
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     const data = await pdf(buffer)
     return data.text
-  } catch (error) {
-    console.error('PDF extraction error:', error)
+  } catch (error: unknown) {
+    logError(\'PDF extraction error:\', error)
     throw new Error('Failed to extract text from PDF')
   }
 }
@@ -15,8 +16,8 @@ export async function extractTextFromDOCX(buffer: Buffer): Promise<string> {
   try {
     const result = await mammoth.extractRawText({ buffer })
     return result.value
-  } catch (error) {
-    console.error('DOCX extraction error:', error)
+  } catch (error: unknown) {
+    logError(\'DOCX extraction error:\', error)
     throw new Error('Failed to extract text from DOCX')
   }
 }
