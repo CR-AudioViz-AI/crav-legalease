@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import { getErrorMessage, logError, formatApiError } from '@/lib/utils/error-utils';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -35,8 +36,8 @@ Format the output in a clean, readable way with proper headings and spacing.`
     })
 
     return response.choices[0]?.message?.content || 'Conversion failed'
-  } catch (error) {
-    console.error('OpenAI conversion error:', error)
+  } catch (error: unknown) {
+    logError(\'OpenAI conversion error:\', error)
     return 'Conversion failed due to an error'
   }
 }
@@ -72,8 +73,8 @@ Format the output as a professional legal document with proper structure.`
     })
 
     return response.choices[0]?.message?.content || 'Conversion failed'
-  } catch (error) {
-    console.error('OpenAI conversion error:', error)
+  } catch (error: unknown) {
+    logError(\'OpenAI conversion error:\', error)
     return 'Conversion failed due to an error'
   }
 }
@@ -114,8 +115,8 @@ Return only valid JSON with these exact keys.`
 
     const content = response.choices[0]?.message?.content || '{}'
     return JSON.parse(content)
-  } catch (error) {
-    console.error('OpenAI extraction error:', error)
+  } catch (error: unknown) {
+    logError(\'OpenAI extraction error:\', error)
     return {
       obligations: [],
       deadlines: [],
@@ -145,8 +146,8 @@ export async function generateSummary(legalText: string): Promise<string> {
     })
 
     return response.choices[0]?.message?.content || 'Summary generation failed'
-  } catch (error) {
-    console.error('OpenAI summary error:', error)
+  } catch (error: unknown) {
+    logError(\'OpenAI summary error:\', error)
     return 'Summary generation failed due to an error'
   }
 }
