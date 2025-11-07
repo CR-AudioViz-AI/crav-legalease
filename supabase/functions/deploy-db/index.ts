@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { getErrorMessage, logError, formatApiError } from '@/lib/utils/error-utils';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -63,7 +64,7 @@ serve(async (req) => {
       try {
         const { data, error } = await supabaseClient.rpc('exec', { sql })
         results.push({ sql: sql.substring(0, 50), success: !error, error: error?.message })
-      } catch (e) {
+      } catch (e: unknown) {
         results.push({ sql: sql.substring(0, 50), success: false, error: e.message })
       }
     }
@@ -85,7 +86,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
-  } catch (error) {
+  } catch (error: unknown) {
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
