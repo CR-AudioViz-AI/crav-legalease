@@ -1,4 +1,5 @@
 import pdf from 'pdf-parse';
+import { getErrorMessage, logError, formatApiError } from '@/lib/utils/error-utils';
 
 export interface PDFParseResult {
   text: string;
@@ -33,7 +34,7 @@ export async function parsePDF(buffer: Buffer): Promise<PDFParseResult> {
       },
       pages: extractPages(data.text, data.numpages),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
