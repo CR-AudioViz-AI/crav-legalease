@@ -7,7 +7,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     const data = await pdf(buffer)
     return data.text
   } catch (error: unknown) {
-    logError(\'PDF extraction error:\', error)
+    logError('PDF extraction error:', error)
     throw new Error('Failed to extract text from PDF')
   }
 }
@@ -17,7 +17,7 @@ export async function extractTextFromDOCX(buffer: Buffer): Promise<string> {
     const result = await mammoth.extractRawText({ buffer })
     return result.value
   } catch (error: unknown) {
-    logError(\'DOCX extraction error:\', error)
+    logError('DOCX extraction error:', error)
     throw new Error('Failed to extract text from DOCX')
   }
 }
