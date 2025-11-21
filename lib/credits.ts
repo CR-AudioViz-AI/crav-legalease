@@ -86,7 +86,7 @@ export async function deductCredits(
     return { success: true, newBalance }
 
   } catch (error: any) {
-    logError(\'Credit deduction error:\', error)
+    logError('Credit deduction error:', error)
     return { success: false, newBalance: 0, error: error.message }
   }
 }
