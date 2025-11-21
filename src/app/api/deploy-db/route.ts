@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       .eq('table_schema', 'public')
 
     if (error) {
-      logError(\'Verification error:\', error)
+      logError('Verification error:', error)
     }
 
     return NextResponse.json({
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     })
 
   } catch (error: any) {
-    logError(\'Deployment error:\', error)
+    logError('Deployment error:', error)
     return NextResponse.json(
       { error: error.message },
       { status: 500 }
