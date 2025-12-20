@@ -14,3 +14,5 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+// Rebuild trigger: Sat Dec 20 19:43:38 UTC 2025
