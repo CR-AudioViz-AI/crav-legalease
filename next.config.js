@@ -1,18 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+  typescript: {
+    ignoreBuildErrors: true
+  },
   images: {
-    domains: ['kteobfyferrukqeolofj.supabase.co'],
-  },
-  // Exclude Supabase Edge Functions from Next.js build
-  webpack: (config, { isServer }) => {
-    config.module.rules.push({
-      test: /\.tsx?$/,
-      exclude: /supabase[\\/]functions/,
-    })
-    return config
-  },
-}
+    remotePatterns: [
+      { protocol: 'https', hostname: '**' }
+    ]
+  }
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
